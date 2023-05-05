@@ -1,0 +1,265 @@
+{% extends 'aircon/base.html' %}
+{% load django_bootstrap5 %}
+{% load i18n static %}
+
+{% block extra_head %}
+  <style>
+    .btn.disabled {
+      opacity: 1.0;
+    }
+  </style>
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <!-- sidebar content goes in here -->
+      <div class="position-sticky pt-md-5">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">
+              <i class="bi bi-sliders fs-5"></i>
+              <span class="ms-2">{% trans "Control Panel" %}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'aircon:schedule' %}">
+              <i class="bi bi-clock fs-5"></i>
+              <span class="ms-2">{% trans "Schedule" %}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </nav>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      <div class="d-flex justify-content-between mb-3">
+        <nav class="align-self-center" aria-label="breadcrumb">
+          <ol class="breadcrumb align-self-center" style="margin-bottom: 0;">
+            <li class="breadcrumb-item">
+              <a href="{% url 'root:index' %}">{% trans 'Top' %}</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">{% trans 'Air Conditioner' %}</li>
+          </ol>
+        </nav>
+        <div id="id-loading" class="spinner-border align-self-center me-3" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+      <div id="id-offline" class="d-none align-self-center me-3">
+        <span class="h5 text-danger">{% trans "Air conditioner is offline" %}</span>
+      </div>
+      <div id="id-procdown" class="d-none align-self-center me-3">
+        <span class="h5 text-danger">{% trans "Air conditioner server is down" %}</span>
+      </div>
+      <div id="id-procstart" class="d-none align-self-center me-3">
+        <span class="h5 text-danger">{% trans "Air conditioner server starting" %}</span>
+      </div>
+      <div id="id-contents" class="h4 d-none">
+        <table class="table" style="max-width:500px;">
+          <tr>
+            <td>{% trans "Power" %}</td>
+            <td id="power">?</td>
+            <td>
+              <button id="setpowerbtn" type="button" class="bi bi bi-toggle-off" style="color: dodgerblue; border: none; background: transparent;" data-bs-toggle="modal" data-bs-target="#setpowerModal"></button>
+            </td>
+          </tr>
+          <tr>
+            <td>{% trans "Set temp" %}</td>
+            <td class="text-nowrap power-on-only">
+              <span id="settmp" class="exclude-in-fanmode">?</span></td>
+            <td class="power-on-only">
+              <button id="settmpbtn" type="button" class="bi bi-chevron-expand exclude-in-fanmode" style="color: dodgerblue; border: none; background: transparent;" data-bs-toggle="modal" data-bs-target="#settmpModal"></button>
+            </td>
+          </tr>
+          <tr>
+            <td>{% trans "Operation mode" %}</td>
+            <td id="mode" class="text-nowrap power-on-only">?</td>
+            <td class="power-on-only">
+              <button id="setmodebtn" type="button" class="bi bi-three-dots-vertical" style="color: dodgerblue; border: none; background: transparent;" data-bs-toggle="modal" data-bs-target="#setmodeModal"></button>
+            </td>
+          </tr>
+          <tr>
+            <td>{% trans "Air volume" %}</td>
+            <td id="fanlv" class="text-nowrap power-on-only">?</td>
+            <td class="power-on-only">
+              <button id="setfanbtn" type="button" class="bi bi-chevron-expand" style="color: dodgerblue; border: none; background: transparent;" data-bs-toggle="modal" data-bs-target="#setfanModal"></button>
+            </td>
+          </tr>
+          <tr>
+            <td>{% trans "Power level" %}</td>
+            <td id="pwrlv1" colspan="2" class="power-on-only">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Filter runtime" %}</td>
+            <td id="filter_time" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td colspan="3">
+              <input type="checkbox" class="btn-check" id="btn-vent" autocomplete="off">
+              <label class="btn btn-outline-secondary disabled" for="btn-vent">
+                {% trans "Ventilation" %}</label>
+              <input type="checkbox" class="btn-check" id="btn-humid" autocomplete="off">
+              <label class="btn btn-outline-secondary" for="btn-humid">{% trans "Humidifier" %}</label>
+              <input type="checkbox" class="btn-check" id="btn-save" autocomplete="off">
+              <label class="btn btn-outline-secondary power-off-remove" for="btn-save">
+                {% trans "Save mode" %}</label>
+              <input type="checkbox" class="btn-check" id="btn-clean" checked="checked" autocomplete="off">
+              <label class="btn btn-outline-secondary disabled" for="btn-clean">{% trans "Cleaning" %}</label>
+            </td>
+          </tr>
+          <tr>
+            <th colspan="3">{% trans "Indoor unit data" %}</th>
+          </tr>
+          <tr>
+            <td>{% trans "Return air temp" %}</td>
+            <td id="sens_ta" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Coil liquid temp" %}</td>
+            <td id="sens_tc" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Coil vapour temp" %}</td>
+            <td id="sens_tcj" colspan="2">?</td>
+          </tr>
+          <tr>
+            <th colspan="3">{% trans "Outdoor unit data" %}</th>
+          </tr>
+          <tr>
+            <td>{% trans "Operating current" %}</td>
+            <td id="sens_current" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Ambient temp" %}</td>
+            <td id="sens_to" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Heat exchanger" %}</td>
+            <td id="sens_te" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Suction temp" %}</td>
+            <td id="sens_ts" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Discharge temp" %}</td>
+            <td id="sens_td" colspan="2">?</td>
+          </tr>
+          <tr>
+            <td>{% trans "Inverter heat sink" %}</td>
+            <td id="sens_ths" colspan="2">?</td>
+          </tr>
+        </table>
+      </div>
+
+      <div class="modal fade" id="setpowerModal" tabindex="-1" aria-labelledby="setpowerModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="setpowerModalLabel">{% trans "Power Control" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body h1 text-center">
+              <div id="setpowermsg" class="mt-3"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {% trans "Cancel" %}</button>
+              <button id="setpowerexec" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                {% trans "OK" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="settmpModal" tabindex="-1" aria-labelledby="settmpModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="settmpModalLabel">{% trans "Temperature Setting" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body h1 text-center">
+              <div class="mt-3">
+                <button id="settmpdown" type="button" class="button border border-0 bi bi-caret-down"></button>
+                <span id="settmpval"></span>
+                <button id="settmpup" type="button" class="button border border-0 bi bi-caret-up"></button>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {% trans "Cancel" %}</button>
+              <button id="settmpexec" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                {% trans "OK" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="setfanModal" tabindex="-1" aria-labelledby="setfanModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="settmpModalLabel">{% trans "Air Volume Setting" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body h5">
+              <div class="mb-3 mt-3">
+                <select class="form-select form-select-lg" id="id_form-setfan">
+                  <option value="H">{% trans "High" %}</option>
+                  <option value="M">{% trans "Med" %}</option>
+                  <option value="L">{% trans "Low" %}</option>
+                  <option value="A" class="exclude-in-fanmode">{% trans "Auto" %}</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {% trans "Cancel" %}</button>
+              <button id="setfanexec" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                {% trans "OK" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="setmodeModal" tabindex="-1" aria-labelledby="setmodeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="setmodeModalLabel">{% trans "Operation Mode Setting" %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body h3">
+              <div class="mb-3 mt-3">
+                <select class="form-select form-select-lg" id="id_form-setmode">
+                  <option value="A">{% trans "Auto" %}</option>
+                  <option value="H">{% trans "Heat" %}</option>
+                  <option value="D">{% trans "Dry" %}</option>
+                  <option value="C">{% trans "Cool" %}</option>
+                  <option value="F">{% trans "Fan" %}</option>
+                </select>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                {% trans "Cancel" %}</button>
+              <button id="setmodeexec" type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                {% trans "OK" %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+{% endblock %}
+
+{% block extrajs %}
+  <script>
+    var wsUrl = "{{ ws_url }}";
+  </script>
+  <script src="{% static 'aircon/aircon.js' %}?20230402"></script>
+{% endblock %}

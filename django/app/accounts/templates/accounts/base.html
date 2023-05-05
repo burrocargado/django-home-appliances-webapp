@@ -1,0 +1,56 @@
+{% extends 'accounts/bootstrap.html' %}
+{% load django_bootstrap5 %}
+{% load i18n static %}
+
+{% block bootstrap5_extra_head %}
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+  <style></style>
+  <script></script>
+
+  <script src="{% url 'javascript-catalog' %}"></script>
+  {% block extra_head %}{% endblock %}
+{% endblock %}
+
+{% block bootstrap5_content %}
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="{% url 'root:index' %}">
+        <img src="{% static 'root/icon-192.png' %}" width="30" height="30" alt="">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          {% if user.is_authenticated %}
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:user_detail' user.pk %}">{% trans "User Profile" %}</a>
+            </li>
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:user_update' user.pk %}">{% trans "Update Profile" %}</a>
+            </li>
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:logout' %}">{% trans "Logout" %}</a>
+            </li>
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:password_change' %}">{% trans "Change Password" %}</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-item nav-link" href="{% url 'accounts:login' %}">{% trans "Login" %}</a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-3">
+    <main>
+      {% block content %}(no content){% endblock %}
+    </main>
+  </div>
+
+  {% block extrajs %}{% endblock %}
+
+{% endblock %}

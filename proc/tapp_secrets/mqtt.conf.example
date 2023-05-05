@@ -1,0 +1,24 @@
+[broker]
+# Set hostname and port of the MQTT broker
+# tls = true for TLS connection, default is false
+host = hostname.domainname
+port = 8883
+tls = true
+
+# Set topic name
+topic = aircon
+
+[credentials]
+# Set username and password for MQTT connection.
+# If user authentication not required, remove these.
+username = mqttuser
+password = mqttpassowrd
+
+# Set TLS CA certificate file to authenticate the MQTT broker.
+# If you do not need server authentication, remove this.
+cacert = /run/secrets/mqtt_cacert
+
+# Set TLS client certificate and client key file for MQTT connection.
+# If client certificate is not required, remove these.
+certfile = /run/secrets/tapp_clientcert
+keyfile = /run/secrets/tapp_clientkey

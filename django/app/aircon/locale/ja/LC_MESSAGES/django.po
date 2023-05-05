@@ -1,0 +1,237 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-04-03 22:19+0900\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: aircon/forms.py:15 aircon/forms.py:23 aircon/templates/aircon/index.html:215
+#: aircon/templates/aircon/index.html:239 aircon/views.py:82 aircon/views.py:86
+msgid "Auto"
+msgstr "自動"
+
+#: aircon/forms.py:16 aircon/templates/aircon/index.html:240 aircon/views.py:82
+msgid "Heat"
+msgstr "暖房"
+
+#: aircon/forms.py:17 aircon/templates/aircon/index.html:241 aircon/views.py:82
+msgid "Dry"
+msgstr "ドライ"
+
+#: aircon/forms.py:18 aircon/templates/aircon/index.html:242 aircon/views.py:83
+msgid "Cool"
+msgstr "冷房"
+
+#: aircon/forms.py:19 aircon/templates/aircon/index.html:243 aircon/views.py:83
+msgid "Fan"
+msgstr "送風"
+
+#: aircon/forms.py:24 aircon/templates/aircon/index.html:214 aircon/views.py:87
+msgid "Low"
+msgstr "弱"
+
+#: aircon/forms.py:25 aircon/templates/aircon/index.html:213 aircon/views.py:87
+msgid "Med"
+msgstr "強"
+
+#: aircon/forms.py:26 aircon/templates/aircon/index.html:212 aircon/views.py:86
+msgid "High"
+msgstr "急"
+
+#: aircon/forms.py:49
+msgid "Select time"
+msgstr "時間"
+
+#: aircon/forms.py:52
+msgid "Power control"
+msgstr "電源制御"
+
+#: aircon/forms.py:55 aircon/templates/aircon/index.html:78
+msgid "Operation mode"
+msgstr "運転モード"
+
+#: aircon/forms.py:58 aircon/templates/aircon/index.html:85
+msgid "Air volume"
+msgstr "風量"
+
+#: aircon/forms.py:62 aircon/templates/aircon/index.html:70
+msgid "Set temp"
+msgstr "設定温度"
+
+#: aircon/forms.py:80
+msgid ""
+"Air volume cannot be set to automatic when the operation mode is set to Fan."
+msgstr "送風運転では風量を自動に設定することはできません。"
+
+#: aircon/templates/aircon/form_schedule.html:16
+#: aircon/templates/aircon/index.html:24
+msgid "Control Panel"
+msgstr "操作パネル"
+
+#: aircon/templates/aircon/form_schedule.html:22
+#: aircon/templates/aircon/form_schedule.html:38
+#: aircon/templates/aircon/index.html:30
+msgid "Schedule"
+msgstr "スケジュール運転"
+
+#: aircon/templates/aircon/form_schedule.html:33
+#: aircon/templates/aircon/index.html:42
+msgid "Top"
+msgstr "トップ"
+
+#: aircon/templates/aircon/form_schedule.html:36
+#: aircon/templates/aircon/index.html:44
+msgid "Air Conditioner"
+msgstr "エアコン"
+
+#: aircon/templates/aircon/form_schedule.html:48
+msgid "Time"
+msgstr "時間"
+
+#: aircon/templates/aircon/form_schedule.html:49
+#: aircon/templates/aircon/index.html:63
+msgid "Power"
+msgstr "電源"
+
+#: aircon/templates/aircon/form_schedule.html:50
+msgid "Mode"
+msgstr "モード"
+
+#: aircon/templates/aircon/form_schedule.html:51
+msgid "AirVol"
+msgstr "風量"
+
+#: aircon/templates/aircon/form_schedule.html:52
+msgid "Temp"
+msgstr "温度"
+
+#: aircon/templates/aircon/form_schedule.html:54
+msgid "Remove"
+msgstr "削除"
+
+#: aircon/templates/aircon/form_schedule.html:74
+msgid "Add Schedule"
+msgstr "スケジュールを追加"
+
+#: aircon/templates/aircon/index.html:52
+msgid "Air conditioner is offline"
+msgstr "エアコンに接続できません"
+
+#: aircon/templates/aircon/index.html:55
+msgid "Air conditioner server is down"
+msgstr "エアコンサーバーが停止しています"
+
+#: aircon/templates/aircon/index.html:58
+msgid "Air conditioner server starting"
+msgstr "エアコンサーバー初期化中"
+
+#: aircon/templates/aircon/index.html:92
+msgid "Power level"
+msgstr "運転レベル"
+
+#: aircon/templates/aircon/index.html:96
+msgid "Filter runtime"
+msgstr "フィルター使用"
+
+#: aircon/templates/aircon/index.html:103
+msgid "Ventilation"
+msgstr "換気"
+
+#: aircon/templates/aircon/index.html:105
+msgid "Humidifier"
+msgstr "加湿"
+
+#: aircon/templates/aircon/index.html:108
+msgid "Save mode"
+msgstr "セーブ"
+
+#: aircon/templates/aircon/index.html:110
+msgid "Cleaning"
+msgstr "乾燥運転"
+
+#: aircon/templates/aircon/index.html:114
+msgid "Indoor unit data"
+msgstr "室内ユニットデータ"
+
+#: aircon/templates/aircon/index.html:117
+msgid "Return air temp"
+msgstr "吸込空気温度"
+
+#: aircon/templates/aircon/index.html:121
+msgid "Coil liquid temp"
+msgstr "熱交換器液側"
+
+#: aircon/templates/aircon/index.html:125
+msgid "Coil vapour temp"
+msgstr "熱交換器ガス側"
+
+#: aircon/templates/aircon/index.html:129
+msgid "Outdoor unit data"
+msgstr "室外機データ"
+
+#: aircon/templates/aircon/index.html:132
+msgid "Operating current"
+msgstr "運転電流"
+
+#: aircon/templates/aircon/index.html:136
+msgid "Ambient temp"
+msgstr "外気温度"
+
+#: aircon/templates/aircon/index.html:140
+msgid "Heat exchanger"
+msgstr "熱交換器温度"
+
+#: aircon/templates/aircon/index.html:144
+msgid "Suction temp"
+msgstr "圧縮機吸込温度"
+
+#: aircon/templates/aircon/index.html:148
+msgid "Discharge temp"
+msgstr "圧縮機吐出温度"
+
+#: aircon/templates/aircon/index.html:152
+msgid "Inverter heat sink"
+msgstr "ヒートシンク"
+
+#: aircon/templates/aircon/index.html:162
+msgid "Power Control"
+msgstr "電源制御"
+
+#: aircon/templates/aircon/index.html:170
+#: aircon/templates/aircon/index.html:194
+#: aircon/templates/aircon/index.html:221
+#: aircon/templates/aircon/index.html:249
+msgid "Cancel"
+msgstr "キャンセル"
+
+#: aircon/templates/aircon/index.html:172
+#: aircon/templates/aircon/index.html:196
+#: aircon/templates/aircon/index.html:223
+#: aircon/templates/aircon/index.html:251
+msgid "OK"
+msgstr "OK"
+
+#: aircon/templates/aircon/index.html:182
+msgid "Temperature Setting"
+msgstr "温度設定"
+
+#: aircon/templates/aircon/index.html:206
+msgid "Air Volume Setting"
+msgstr "風量設定"
+
+#: aircon/templates/aircon/index.html:233
+msgid "Operation Mode Setting"
+msgstr "運転モード設定"

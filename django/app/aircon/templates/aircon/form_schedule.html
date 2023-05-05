@@ -1,0 +1,119 @@
+{% extends 'aircon/base.html' %}
+{% load django_bootstrap5 %}
+{% load i18n static %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <!-- sidebar content goes in here -->
+      <div class="position-sticky pt-md-5">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'aircon:index' %}">
+              <i class="bi bi-sliders fs-5"></i>
+              <span class="ms-2">{% trans "Control Panel" %}</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="#">
+              <i class="bi bi-clock fs-5"></i>
+              <span class="ms-2">{% trans "Schedule" %}</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+
+    </nav>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="{% url 'root:index' %}">{% trans 'Top' %}</a>
+          </li>
+          <li class="breadcrumb-item">
+            <a href="{% url 'aircon:index' %}">{% trans 'Air Conditioner' %}</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">{% trans 'Schedule' %}</li>
+        </ol>
+      </nav>
+      <form id="form-schedule-remove" name="remove" method="post" action="control">
+        {% csrf_token %}
+      </form>
+      <div class="table-responsive">
+        <table class="table table-striped table-bordered table-sm text-center text-nowrap" style="max-width:500px;">
+          <thead>
+            <tr class="align-middle">
+              <th>{% trans "Time" %}</th>
+              <th>{% trans "Power" %}</th>
+              <th>{% trans "Mode" %}</th>
+              <th>{% trans "AirVol" %}</th>
+              <th>{% trans "Temp" %}</th>
+              <th>
+                {% bootstrap_button button_type="submit" name="btn-sch-remove" content=_("Remove") form="form-schedule-remove" extra_classes="btn btn-light btn-outline-secondary btn-sm" %}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for sched in sched_list %}
+              <tr>
+                <td>{{sched.time}}</td>
+                <td>{{sched.power}}</td>
+                <td>{{sched.mode}}</td>
+                <td>{{sched.fan}}</td>
+                <td>{{sched.temp}}</td>
+                <td>
+                  <input type="checkbox" name="chk_rm" value="{{ sched.id }}" form="form-schedule-remove" class="align-middle">
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% bootstrap_button button_type="submit" content=_("Add Schedule") form="form-schedule-item" extra_classes="btn-light btn-outline-secondary mt-3 mb-3" %}
+      <form id="form-schedule-item" class="row row-cols-lg-auto g-3 align-items-center" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form layout="inline" %}
+      </form>
+    </main>
+  </div>
+{% endblock %}
+
+{% block extrajs %}
+  <script>
+    const setPower = document.getElementById('id_set_power');
+    const setMode = document.getElementById('id_set_mode');
+    const setFan = document.getElementById('id_set_fan');
+    const setTemp = document.getElementById('id_set_temp');
+    window.onload = function () {
+      powerChange();
+    }
+
+    function powerChange() {
+      if (setPower.value == '0') {
+        setMode.disabled = true;
+        setFan.disabled = true;
+        setTemp.disabled = true;
+      } else if (setMode.value == 'F') {
+        setMode.disabled = false;
+        setFan.disabled = false;
+        setTemp.disabled = true;
+      } else {
+        setMode.disabled = false;
+        setFan.disabled = false;
+        setTemp.disabled = false;
+      }
+    }
+
+    function modeChange() {
+      if (setMode.value == 'F') {
+        setTemp.disabled = true;
+      } else {
+        setTemp.disabled = false;
+      }
+    }
+    setPower.onchange = powerChange;
+    setMode.onchange = modeChange;
+  </script>
+{% endblock %}

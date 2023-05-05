@@ -1,0 +1,221 @@
+version: "3"
+
+services:
+  nginx:
+    command: nginx -g "daemon off;"
+    image: nginx:alpine
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - static:/var/www/app/static
+    networks:
+      fixed_compose_network:
+        # nginx and tlsgw need each other's IP addresses at startup,
+        # static IP address is used.
+        ipv4_address: 10.254.249.253
+    restart: on-failure
+
+  app:
+    image: "burrocargado/hawebapp"
+    build:
+      context: ./django
+    init: true
+    command: >
+      sh -c "
+      python3 manage.py compilemessages &&
+      python3 manage.py collectstatic --no-input &&
+      python3 manage.py migrate &&
+      gunicorn hawebapp.asgi:application -k hawebapp.workers.MyUvicornWorker --bind 0.0.0.0:8000
+      "
+    volumes:
+      - static:/app/static
+      - ./django/app:/app
+    secrets:
+      - django_env
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: bash -c "</dev/tcp/localhost/8000 || exit 1"
+      interval: 1s
+      timeout: 10s
+      retries: 30
+      start_period: 30s
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  bridge:
+    image: "burrocargado/hawebapp"
+    init: true
+    command: >
+      sh -c "
+      python3 manage.py mqtt_bridge
+      --config /run/secrets/bridge_config
+      "
+    volumes:
+      - ./django/app:/app
+    secrets:
+      - bridge_config
+      - bridge_clientcert
+      - bridge_clientkey
+      - mqtt_cacert
+      - django_env
+    depends_on:
+      worker:
+        condition: service_started
+      mosquitto:
+        condition: service_started
+      redis:
+        condition: service_healthy
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  worker:
+    image: "burrocargado/hawebapp"
+    init: true
+    command: bash -c 'python3 manage.py runworker mqtt'
+    volumes:
+      - ./django/app:/app
+    secrets:
+      - django_env
+    depends_on:
+      app:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  django-q:
+    image: "burrocargado/hawebapp"
+    command: bash -c 'python3 manage.py qcluster'
+    volumes:
+      - ./django/app:/app
+    secrets:
+      - django_env
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  redis:
+    image: "redis:6.2.4"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: bash -c "</dev/tcp/localhost/6379 || exit 1"
+      interval: 1s
+      timeout: 10s
+      retries: 50
+      start_period: 30s
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  mosquitto:
+    image: eclipse-mosquitto:1.6
+    ports:
+      - "8883:8883"
+    volumes:
+      - ./mqtt/config:/mosquitto/config:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    secrets:
+      - mqtt_passwd
+      - mqtt_cacert
+      - mqtt_brokercert
+      - mqtt_brokerkey
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  tapp:
+    image: "burrocargado/hawebapp-proc"
+    build:
+      context: ./proc
+    init: true
+    command: >
+      sh -c "
+      alembic upgrade head &&
+      python3 server.py -p -s -f /run/secrets/tapp_mqttconf
+      "
+    volumes:
+      - ./proc/toshiba-aircon-packet-processor:/app
+    secrets:
+      - tapp_mqttconf
+      - tapp_clientcert
+      - tapp_clientkey
+      - mqtt_cacert
+    depends_on:
+      mosquitto:
+        condition: service_started
+    networks:
+      fixed_compose_network:
+    restart: on-failure
+
+  tlsgw:
+    image: steveltn/https-portal:1
+    ports:
+      - '8180:80'
+      - '8443:443'
+    env_file:
+      - tlsgw/tlsgw.env
+    environment:
+      WEBSOCKET: 'true'
+    volumes:
+      - https-portal-data:/var/lib/https-portal
+      - https-portal-nginx:/var/log/nginx
+      # default.ssl.conf.erb is modified to handle REAL_IP_FROM
+      # which is described in tlsgw/tlsgw.env.example.
+      - ./tlsgw/default.ssl.conf.erb:/var/lib/nginx-conf/default.ssl.conf.erb
+    networks:
+      fixed_compose_network:
+        # nginx and tlsgw need each other's IP addresses at startup,
+        # static IP address is used.
+        ipv4_address: 10.254.249.254
+    restart: on-failure
+
+volumes:
+  static:
+  redis_data:
+  mosquitto_data:
+  mosquitto_log:
+  https-portal-data:
+  https-portal-nginx:
+
+networks:
+  fixed_compose_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.254.249.0/24
+          gateway: 10.254.249.1
+          # ip_range: 10.254.249.0/25 this doesn't work for docker-compose v3
+
+secrets:
+  django_env:
+    file: ./django/secrets/env
+  bridge_config:
+    file: ./bridge/secrets/bridge.conf
+  bridge_clientcert:
+    file: ./bridge/secrets/client.crt
+  bridge_clientkey:
+    file: ./bridge/secrets/client.key
+  mqtt_passwd:
+    file: ./mqtt/secrets/mosquitto.passwd
+  mqtt_cacert:
+    file: ./mqtt/secrets/cacert.pem
+  mqtt_brokercert:
+    file: ./mqtt/secrets/broker.crt
+  mqtt_brokerkey:
+    file: ./mqtt/secrets/broker.key
+  tapp_mqttconf:
+    file: ./proc/tapp_secrets/mqtt.conf
+  tapp_clientcert:
+    file: ./proc/tapp_secrets/client.crt
+  tapp_clientkey:
+    file: ./proc/tapp_secrets/client.key

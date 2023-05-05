@@ -1,0 +1,60 @@
+{% extends 'root/base.html' %}
+{% load django_bootstrap5 %}
+{% load i18n static %}
+
+{% block extra_head %}{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+  <div class="row">
+    <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <!-- sidebar content goes in here -->
+      <div class="position-sticky pt-md-5">
+        <ul class="nav flex-column">
+          {% if user.is_authenticated %}
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:user_detail' user.pk %}">{% trans 'User Profile' %}</a>
+            </li>
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:user_update' user.pk %}">{% trans 'Update Profile' %}</a>
+            </li>
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:logout' %}">{% trans 'Logout' %}</a>
+            </li>
+            <li>
+              <a class="nav-item nav-link" href="{% url 'accounts:password_change' %}">{% trans 'Change Password' %}</a>
+            </li>
+          {% else %}
+            <li class="nav-item">
+              <a class="nav-item nav-link" href="{% url 'accounts:login' %}">{% trans 'Login' %}</a>
+            </li>
+          {% endif %}
+
+        </ul>
+      </div>
+
+    </nav>
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+      <div class="d-flex justify-content-between mb-3">
+        <nav class="align-self-center" aria-label="breadcrumb">
+          <ol class="breadcrumb align-self-center" style="margin-bottom: 0;">
+            <li class="breadcrumb-item" aria-current="page">{% trans 'Top' %}</li>
+          </ol>
+        </nav>
+      </div>
+      <div id="id-contents">
+        <div>
+          <ul>
+            <li>
+              <a class="nav-link active" aria-current="page" href="{% url 'aircon:index' %}">
+                <i class="bi bi-thermometer-half fs-5"></i>
+                <span class="ms-2">{% trans "Air conditioner" %}</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </main>
+  </div>
+{% endblock %}
