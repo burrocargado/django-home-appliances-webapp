@@ -1,7 +1,32 @@
 version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
-    directory: "/" # Location of package manifests
+    directory: "/nginx" # Location of package manifests
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/django" # Location of package manifests
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/proc" # Location of package manifests
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/redis" # Location of package manifests
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/mqtt" # Location of package manifests
+    schedule:
+      interval: "daily"
+
+  - package-ecosystem: "docker" # See documentation for possible values
+    directory: "/tlsgw" # Location of package manifests
     schedule:
       interval: "daily"
 
