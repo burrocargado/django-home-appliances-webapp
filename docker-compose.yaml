@@ -124,7 +124,8 @@ services:
     ports:
       - "8883:8883"
     volumes:
-      - ./mqtt/config:/mosquitto/config:ro
+      - ./mqtt/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./config/mosquitto.acl:/mosquitto/config/mosquitto.acl:ro
       - mosquitto_data:/mosquitto/data
       - mosquitto_log:/mosquitto/log
     secrets:
@@ -167,7 +168,7 @@ services:
       - '8180:80'
       - '8443:443'
     env_file:
-      - tlsgw/tlsgw.env
+      - ./config/tlsgw.env
     environment:
       WEBSOCKET: 'true'
     volumes:
@@ -202,24 +203,24 @@ networks:
 
 secrets:
   django_env:
-    file: ./django/secrets/env
+    file: ./config/django_env
   bridge_config:
-    file: ./bridge/secrets/bridge.conf
+    file: ./config/bridge.conf
   bridge_clientcert:
-    file: ./bridge/secrets/client.crt
+    file: ./config/bridge_client.crt
   bridge_clientkey:
-    file: ./bridge/secrets/client.key
+    file: ./config/bridge_client.key
   mqtt_passwd:
-    file: ./mqtt/secrets/mosquitto.passwd
+    file: ./config/mosquitto.passwd
   mqtt_cacert:
-    file: ./mqtt/secrets/cacert.pem
+    file: ./config/cacert.pem
   mqtt_brokercert:
-    file: ./mqtt/secrets/broker.crt
+    file: ./config/broker.crt
   mqtt_brokerkey:
-    file: ./mqtt/secrets/broker.key
+    file: ./config/broker.key
   tapp_mqttconf:
-    file: ./proc/tapp_secrets/mqtt.conf
+    file: ./config/tapp_mqtt.conf
   tapp_clientcert:
-    file: ./proc/tapp_secrets/client.crt
+    file: ./config/tapp_client.crt
   tapp_clientkey:
-    file: ./proc/tapp_secrets/client.key
+    file: ./config/tapp_client.key
