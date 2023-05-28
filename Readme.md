@@ -51,10 +51,10 @@ git submodule update --init --recursive
 ### Build the Docker images
 
 Before configuration, it is necessary to build the image defined in the service "app".
-To build the images, create an empty file ```tlsgw.env```, without this file the build will fail.
+To build the images, create an empty file ```config/tlsgw.env```, without this file the build will fail.
 
 ```shell
-touch tlsgw/tlsgw.env
+touch config/tlsgw.env
 docker compose build
 ```
 
@@ -62,40 +62,25 @@ docker compose build
 
 - Prepare TLS certificates for the MQTT broker and clients.  
   (Refer to the documentation for OpenSSL or other tools.)
-  - Create a Certificate Authority (CA) to sign certificates.  
-    The CA certificate is available once the CA is prepared, save as ```cacert.pem```.
-  - Generate a server certificate and private key for the MQTT broker and save them as broker.crt and broker.key, respectively.
-  - Generate three pairs of client certificate and private key for the bridge, processor, and device, and save them as three pairs of ```client.crt``` and ```client.key``` in separate folders.
+  - Create a Certificate Authority (CA) to sign certificates. The CA certificate is available once the CA is prepared, save as ```cacert.pem``` in the config directory.
+  - Generate a server certificate and private key for the MQTT broker. Sign the certificate with the CA and save the signed certificate and key to the config directory as ```broker.crt``` and ```broker.key```, respectively.
+  - Generate two pairs of a client certificate and private key for the bridge and the processor, sign for the certificates with the CA and place the signed certificates and keys in the config directory as ```bridge.crt```, ```bridge.key```, ```tapp.crt```, ```tapp.key```. You should also generate a certificate and key for the device implementation (toshiba-aircon-mqtt-bridge) and sign the certificate with the same CA.
 - Mosquitto configurations:
   - Create a password file
-    - Copy ```mqtt/mosquitto.passwd.example``` to ```mqtt/mosquitto.passwd```.
-    - Edit the file to set three username:password pairs for device, bridge, and processor.
-    - Copy the file to ```mqtt/secrets/``` and then hash the passwords:
+    - Copy ```config/mosquitto.passwd.example``` to ```config/mosquitto.passwd```.
+    - Edit the file to include at least three username:password pairs for the bridge, processor, and the device. It is a good idea to copy the file to a safe place before hashing the passwords in the next step, so that you can reference the plain passwords later.
+    - Hash the passwords in the file:
 
       ```shell
-      cd mqtt
-      ./hashpw.sh
+      ./hash_mqtt_passwd.sh
       ```
 
-      Leave the ```mqtt/mosquitto.passwd``` file unhashed so that you can reference the credentials later.
-  - Place ```cacert.pem```, ```broker.crt```, ```broker.key``` in ```mqtt/secrets/```.
-  - Create ```mqtt/config/mosquitto.acl``` referencing ```mqtt/config/mosquitto.acl.example```.
-- Configure the device to use one of the ```client.crt``` and ```client.key``` pairs and the ```cacert.pem```.
-- Place another pair of ```client.crt``` and ```client.key``` in ```bridge/secrets/``` and edit ```bridge/secrets/biridge.conf``` with reference to ```bridge/secrets/bridge.conf.example```.
-- Place yet another pair of ```client.crt``` and ```client.key``` in ```proc/tapp_secrets/```.
-- Create ```proc/tapp_secrets/mqtt.conf``` referencing ```proc/tapp_secrets/mqtt.conf.example```.
-- Create ```django/secrets/env```
-  - Remove ```django/secrets/env``` if present.
-  - Generate ```django/secrets/env```, which contains the Django secret key, as follows:
-
-    ```shell
-    cd django
-    ./make_secretenv.sh
-    ```
-
-  - Edit ```django/secrets/env``` by referencing ```django/secrets/env.example```.
-- Edit ```tlsgw/tlsgw.env``` referencing ```tlsgw/tlsgw.env.example```.  
-  For the HTTPS-PORTAL to work in staging or production mode, the Docker service "tlsgw" must be accessible by the officially registered FQDN through the ports 443 (TLS) and 80 (HTTP) exposed to the Internet. I'm using HAProxy to route incoming traffic to the tlsgw ports. The FQDN should be configured in ```tlsgw/tlsgw.env```. You should also configure your local DNS server so that the FQDN points to the IP address of the server, otherwise the client address detected by the Django will be replaced by the global IP address assigned by your ISP and WHITE_LISTED_RANGES will not work.
+  - Create ```config/mosquitto.acl``` with reference to the ```config/mosquitto.acl.example```.
+- Django and packet processor configurations
+  - Create ```config/django_env```, ```config/bridge.conf``` and ```config/tapp_mqtt.conf``` with reference to the example files stored in the config directory. You can generate a key string for DJANGO_SECRET_KEY in the django_env file using the ```gen_django_secretkey.sh``` script.
+- HTTPS-PORTAL
+  - Edit ```config/tlsgw.env``` referencing ```config/tlsgw.env.example```.  
+  For the HTTPS-PORTAL to work in staging or production mode, the Docker service "tlsgw" must be accessible by the officially registered FQDN through the ports 443 (TLS) and 80 (HTTP) exposed to the Internet. I'm using HAProxy to route incoming traffic to the tlsgw ports. The FQDN should be configured in ```config/tlsgw.env```. You should also configure your local DNS server so that the FQDN points to the IP address of the server, otherwise the client address detected by the Django will be replaced by the global IP address assigned by your ISP and WHITE_LISTED_RANGES will not work.
 
 ### Run the Docker containers
 
