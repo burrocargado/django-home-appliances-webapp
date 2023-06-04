@@ -2,6 +2,9 @@ version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/nginx" # Location of package manifests
+    ignore:
+      - dependency-name: "nginx"
+        versions: ["~> 1.25.0", "< 1.26.0"]
     schedule:
       interval: "daily"
 
