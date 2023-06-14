@@ -396,6 +396,7 @@ class ControlPanel{
     }
     humidCallback (e) {
         let value;
+        e.currentTarget.blur(); 
         if (e.currentTarget.checked) {
             value = "1";
         } else {
@@ -407,6 +408,7 @@ class ControlPanel{
     }
     saveCallback (e) {
         let value;
+        e.currentTarget.blur(); 
         if (e.currentTarget.checked) {
             value = "S";
         } else {
