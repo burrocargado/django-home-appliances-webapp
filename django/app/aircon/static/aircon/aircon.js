@@ -187,7 +187,7 @@ class Update {
 
 class SystemStatus {
     constructor () {
-        this.nodeStatus = {"bridge": "alive", "processor": "ready"};
+        this.nodeStatus = {"bridge": "alive", "processor": "ready", "procstate": "?"};
         this.elLoading = document.getElementById("id-loading");
         this.elOffline = document.getElementById("id-offline");
         this.elProcstart = document.getElementById("id-procstart");
@@ -203,7 +203,10 @@ class SystemStatus {
         this.render();
     }
     setProcessor (d) {
-        this.nodeStatus.processor = d.state;
+        if ("state" in d)
+            this.nodeStatus.processor = d.state;
+        else if ("internal_state" in d)
+            this.nodeStatus.procstate = d.internal_state;
         this.render();
     }
     show (el) {
