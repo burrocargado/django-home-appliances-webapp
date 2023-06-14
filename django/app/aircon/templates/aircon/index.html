@@ -258,8 +258,8 @@
 {% endblock %}
 
 {% block extrajs %}
+  <script src="{% static 'aircon/aircon.js' %}?20230610"></script>
   <script>
-    var wsUrl = "{{ ws_url }}";
+    const controlPanel = new ControlPanel("wss://" + window.location.host + "{{ ws_url }}");
   </script>
-  <script src="{% static 'aircon/aircon.js' %}?20230402"></script>
 {% endblock %}
