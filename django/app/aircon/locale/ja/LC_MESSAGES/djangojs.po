@@ -28,15 +28,15 @@ msgstr "電源を入れます"
 
 #: aircon/static/aircon/aircon.js:96
 msgid "Low"
-msgstr "弱"
+msgstr "微"
 
 #: aircon/static/aircon/aircon.js:98
 msgid "Med"
-msgstr "強"
+msgstr "弱"
 
 #: aircon/static/aircon/aircon.js:100
 msgid "High"
-msgstr "急"
+msgstr "強"
 
 #: aircon/static/aircon/aircon.js:102
 msgid "Atuo"

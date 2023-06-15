@@ -41,15 +41,15 @@ msgstr "送風"
 
 #: aircon/forms.py:24 aircon/templates/aircon/index.html:214 aircon/views.py:87
 msgid "Low"
-msgstr "弱"
+msgstr "微"
 
 #: aircon/forms.py:25 aircon/templates/aircon/index.html:213 aircon/views.py:87
 msgid "Med"
-msgstr "強"
+msgstr "弱"
 
 #: aircon/forms.py:26 aircon/templates/aircon/index.html:212 aircon/views.py:86
 msgid "High"
-msgstr "急"
+msgstr "強"
 
 #: aircon/forms.py:49
 msgid "Select time"
@@ -144,7 +144,7 @@ msgstr "運転レベル"
 
 #: aircon/templates/aircon/index.html:96
 msgid "Filter runtime"
-msgstr "フィルター使用"
+msgstr "フィルター時間"
 
 #: aircon/templates/aircon/index.html:103
 msgid "Ventilation"
