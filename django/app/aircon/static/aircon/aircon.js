@@ -41,7 +41,7 @@ class Status {
         this.powerOnOnly = document.querySelectorAll(".power-on-only");
         this.powerOffRemove = document.querySelectorAll(".power-off-remove");
         this.excFan = document.querySelectorAll(".exclude-in-fanmode");
-        this.elSetPowerBtn = document.getElementById("setpowerbtn");
+        this.elSetPowerBtn = document.getElementById("setpower-btn");
         this.btnVent = new LabelBtn(document.getElementById("btn-vent"));
         this.btnHumid = new LabelBtn(document.getElementById("btn-humid"));
         this.btnSave = new LabelBtn(document.getElementById("btn-save"));
@@ -152,16 +152,16 @@ class Update {
     constructor (parent) {
         this.parent = parent;
         this.elPwr = document.getElementById("pwrlv1");
-        this.elFilt = document.getElementById("filter_time");
-        this.elTa = document.getElementById("sens_ta");
-        this.elTc = document.getElementById("sens_tc");
-        this.elTcj = document.getElementById("sens_tcj");
-        this.elTo = document.getElementById("sens_to");
-        this.elTe = document.getElementById("sens_te");
-        this.elTd = document.getElementById("sens_td");
-        this.elTs = document.getElementById("sens_ts");
-        this.elThs = document.getElementById("sens_ths");
-        this.elCurr = document.getElementById("sens_current");
+        this.elFilt = document.getElementById("filter-time");
+        this.elTa = document.getElementById("sens-ta");
+        this.elTc = document.getElementById("sens-tc");
+        this.elTcj = document.getElementById("sens-tcj");
+        this.elTo = document.getElementById("sens-to");
+        this.elTe = document.getElementById("sens-te");
+        this.elTd = document.getElementById("sens-td");
+        this.elTs = document.getElementById("sens-ts");
+        this.elThs = document.getElementById("sens-ths");
+        this.elCurr = document.getElementById("sens-current");
     }
     setUpdate (d) {
         this.elPwr.textContent = d.pwrlv1;
@@ -188,11 +188,11 @@ class Update {
 class SystemStatus {
     constructor () {
         this.nodeStatus = {"bridge": "alive", "processor": "ready", "procstate": "?"};
-        this.elLoading = document.getElementById("id-loading");
-        this.elOffline = document.getElementById("id-offline");
-        this.elProcstart = document.getElementById("id-procstart");
-        this.elProcdown = document.getElementById("id-procdown");
-        this.elContents = document.getElementById("id-contents");
+        this.elLoading = document.getElementById("loading");
+        this.elOffline = document.getElementById("offline");
+        this.elProcstart = document.getElementById("procstart");
+        this.elProcdown = document.getElementById("procdown");
+        this.elContents = document.getElementById("contents");
     }
     setWebsocket (sw) {
         if (sw) this.hide(this.elLoading);
@@ -252,10 +252,10 @@ class ControlPanel{
         this.update = new Update(this);
         this.acStatus = {};
         this.settmp = 0;
-        this.elPowerModalMessage = document.getElementById("setpowermsg");
-        this.elSetTmpVal = document.getElementById("settmpval");
-        this.elSetFanLv = document.getElementById("id_form-setfan");
-        this.elSetMode = document.getElementById("id_form-setmode");
+        this.elPowerModalMessage = document.getElementById("setpower-msg");
+        this.elSetTmpVal = document.getElementById("settmp-val");
+        this.elSetFanLv = document.getElementById("setfan-select");
+        this.elSetMode = document.getElementById("setmode-select");
         this.btnHumid = new LabelBtn(
             document.getElementById("btn-humid"),
             (e) => { this.humidCallback(e); }
@@ -264,16 +264,16 @@ class ControlPanel{
             document.getElementById("btn-save"),
             (e) => { this.saveCallback(e); }
         );
-        document.getElementById("setpowerbtn").addEventListener('click', () => { this.setPowerModal(); });
-        document.getElementById("setpowerexec").addEventListener('click', () => { this.setPower(); });
-        document.getElementById("settmpbtn").addEventListener('click', () => { this.setTempModal(); });
-        document.getElementById("settmpdown").addEventListener('click', () => { this.setTempDown(); });
-        document.getElementById("settmpup").addEventListener('click', () => { this.setTempUp(); });
-        document.getElementById("settmpexec").addEventListener('click', () => { this.setTemp(); });
-        document.getElementById("setfanbtn").addEventListener('click', () => { this.setFanModal(); });
-        document.getElementById("setfanexec").addEventListener('click', () => { this.setFan(); });
-        document.getElementById("setmodebtn").addEventListener('click', () => { this.setModeModal(); });
-        document.getElementById("setmodeexec").addEventListener('click', () => { this.setMode(); });
+        document.getElementById("setpower-btn").addEventListener('click', () => { this.setPowerModal(); });
+        document.getElementById("setpower-exec").addEventListener('click', () => { this.setPower(); });
+        document.getElementById("settmp-btn").addEventListener('click', () => { this.setTempModal(); });
+        document.getElementById("settmp-down").addEventListener('click', () => { this.setTempDown(); });
+        document.getElementById("settmp-up").addEventListener('click', () => { this.setTempUp(); });
+        document.getElementById("settmp-exec").addEventListener('click', () => { this.setTemp(); });
+        document.getElementById("setfan-btn").addEventListener('click', () => { this.setFanModal(); });
+        document.getElementById("setfan-exec").addEventListener('click', () => { this.setFan(); });
+        document.getElementById("setmode-btn").addEventListener('click', () => { this.setModeModal(); });
+        document.getElementById("setmode-exec").addEventListener('click', () => { this.setMode(); });
         
         this.connect();
     }
