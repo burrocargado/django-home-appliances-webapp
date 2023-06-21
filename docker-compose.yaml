@@ -175,7 +175,7 @@ services:
       - https-portal-data:/var/lib/https-portal
       - https-portal-nginx:/var/log/nginx
       # default.ssl.conf.erb is modified to handle REAL_IP_FROM
-      # which is described in tlsgw/tlsgw.env.example.
+      # which is described in config/tlsgw.env.example.
       - ./tlsgw/default.ssl.conf.erb:/var/lib/nginx-conf/default.ssl.conf.erb
     networks:
       fixed_compose_network:
